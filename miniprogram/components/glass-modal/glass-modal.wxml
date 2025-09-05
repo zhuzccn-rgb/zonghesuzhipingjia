@@ -1,0 +1,65 @@
+<!--components/glass-modal/glass-modal.wxml-->
+<view class="glass-modal {{show ? 'show' : ''}}" bindtap="onMaskTap">
+  <view class="modal-container">
+    <!-- 背景模糊层 -->
+    <view class="modal-backdrop"></view>
+    
+    <!-- 主要内容区域 -->
+    <view class="modal-content glass-card" catchtap="onContentTap" 
+          style="{{contentStyle}}">
+      
+      <!-- 标题栏 -->
+      <view wx:if="{{title || showClose}}" class="modal-header">
+        <view class="modal-title">
+          <text wx:if="{{title}}" class="text-title">{{title}}</text>
+        </view>
+        
+        <view wx:if="{{showClose}}" class="close-btn" bindtap="onCloseTap">
+          <image src="/assets/icons/close.png" mode="aspectFit"></image>
+        </view>
+      </view>
+      
+      <!-- 内容区域 -->
+      <view class="modal-body" style="{{bodyStyle}}">
+        <slot name="content">
+          <text wx:if="{{content}}" class="modal-text">{{content}}</text>
+        </slot>
+      </view>
+      
+      <!-- 按钮区域 -->
+      <view wx:if="{{showButtons}}" class="modal-footer">
+        <view wx:if="{{showCancel}}" 
+              class="modal-btn cancel-btn {{cancelButtonClass}}" 
+              bindtap="onCancelTap">
+          <text>{{cancelText}}</text>
+        </view>
+        
+        <view wx:if="{{showConfirm}}" 
+              class="modal-btn confirm-btn {{confirmButtonClass}}" 
+              bindtap="onConfirmTap">
+          <text>{{confirmText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 自定义样式 -->
+<wxs module="utils">
+  var getModalSize = function(size) {
+    if (size === 'small') return 'width: 280px;'
+    if (size === 'large') return 'width: 90%; max-width: 500px;'
+    if (size === 'full') return 'width: 95%; height: 80%;'
+    return 'width: 320px;'
+  }
+  
+  var getBodyHeight = function(maxHeight) {
+    if (!maxHeight) return ''
+    return 'max-height: ' + maxHeight + '; overflow-y: auto;'
+  }
+  
+  module.exports = {
+    getModalSize: getModalSize,
+    getBodyHeight: getBodyHeight
+  }
+</wxs>

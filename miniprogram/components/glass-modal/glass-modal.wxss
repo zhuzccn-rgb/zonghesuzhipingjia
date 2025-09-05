@@ -1,0 +1,328 @@
+/* components/glass-modal/glass-modal.wxss */
+
+.glass-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 背景模糊层 */
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 主要内容区域 - 液态玻璃效果 */
+.modal-content {
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  max-width: 90%;
+  max-height: 80%;
+  overflow: hidden;
+  transform: scale(0.8) translateY(20px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-modal.show .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+/* 标题栏 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(0, 0, 0, 0.1) 50%, 
+    transparent 100%);
+}
+
+.modal-title {
+  flex: 1;
+}
+
+.close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.close-btn:active {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+}
+
+.close-btn image {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+}
+
+/* 内容区域 */
+.modal-body {
+  padding: 20px 24px;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+/* 按钮区域 */
+.modal-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.modal-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(0, 0, 0, 0.1) 50%, 
+    transparent 100%);
+}
+
+.modal-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cancel-btn:active {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(0.98);
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  color: #FFFFFF;
+  box-shadow: 0 2px 12px rgba(0, 122, 255, 0.3);
+}
+
+.confirm-btn:active {
+  background: linear-gradient(135deg, #0056CC 0%, #4A4AB8 100%);
+  transform: scale(0.98);
+  box-shadow: 0 1px 6px rgba(0, 122, 255, 0.3);
+}
+
+/* 单个按钮时占满宽度 */
+.modal-footer .modal-btn:only-child {
+  flex: none;
+  width: 100%;
+}
+
+/* 加载状态 */
+.modal-content.loading {
+  pointer-events: none;
+}
+
+.modal-content.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 375px) {
+  .modal-content {
+    border-radius: 16px;
+    margin: 20px;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .modal-btn {
+    height: 40px;
+    font-size: 15px;
+  }
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .modal-content {
+    background: rgba(28, 28, 30, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  }
+  
+  .modal-header::after,
+  .modal-footer::before {
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      transparent 100%);
+  }
+  
+  .close-btn {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .close-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .close-btn image {
+    opacity: 0.8;
+  }
+  
+  .cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .cancel-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* 动画增强 */
+@keyframes modalSlideIn {
+  from {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideOut {
+  from {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+}
+
+.glass-modal.show .modal-content {
+  animation: modalSlideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.glass-modal:not(.show) .modal-content {
+  animation: modalSlideOut 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* 特殊尺寸样式 */
+.modal-content.size-small {
+  width: 280px;
+}
+
+.modal-content.size-large {
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-content.size-full {
+  width: 95%;
+  height: 80%;
+}
+
+.modal-content.size-full .modal-body {
+  flex: 1;
+}

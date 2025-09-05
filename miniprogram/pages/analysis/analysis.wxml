@@ -1,0 +1,240 @@
+<!--pages/analysis/analysis.wxml-->
+<view class="container">
+  <!-- 分析概览卡片 -->
+  <view class="overview-card glass-card">
+    <view class="overview-header">
+      <text class="text-title">AI 综合分析</text>
+      <view class="last-update">
+        <text class="text-caption">最后更新: {{lastUpdateTime}}</text>
+      </view>
+    </view>
+    
+    <view class="overview-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{overallScore}}</text>
+        <text class="stat-label">综合评分</text>
+        <view class="stat-trend {{scoreTrend >= 0 ? 'up' : 'down'}}">
+          <image src="/assets/icons/{{scoreTrend >= 0 ? 'trend-up' : 'trend-down'}}.png" mode="aspectFit"></image>
+          <text>{{Math.abs(scoreTrend)}}</text>
+        </view>
+      </view>
+      
+      <view class="stat-item">
+        <text class="stat-value">{{analysisCount}}</text>
+        <text class="stat-label">分析次数</text>
+      </view>
+      
+      <view class="stat-item">
+        <text class="stat-value">{{improvementRate}}%</text>
+        <text class="stat-label">提升率</text>
+      </view>
+    </view>
+    
+    <view class="generate-btn-container">
+      <view class="btn btn-primary" bindtap="generateAnalysis" disabled="{{generating}}">
+        <view wx:if="{{generating}}" class="loading-spinner small"></view>
+        <text>{{generating ? '分析中...' : '生成新分析'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 雷达图分析 -->
+  <view class="radar-section">
+    <view class="section-header">
+      <text class="text-subtitle">能力雷达图</text>
+      <view class="period-selector">
+        <view class="period-item {{selectedPeriod === 'week' ? 'active' : ''}}" 
+              data-period="week" bindtap="onPeriodChange">本周</view>
+        <view class="period-item {{selectedPeriod === 'month' ? 'active' : ''}}" 
+              data-period="month" bindtap="onPeriodChange">本月</view>
+        <view class="period-item {{selectedPeriod === 'all' ? 'active' : ''}}" 
+              data-period="all" bindtap="onPeriodChange">全部</view>
+      </view>
+    </view>
+    
+    <view class="radar-container card">
+      <canvas 
+        canvas-id="radarChart" 
+        class="radar-canvas"
+        disable-scroll="true"
+        bindtouchstart="onChartTouch"
+        bindtouchmove="onChartTouch"
+        bindtouchend="onChartTouch">
+      </canvas>
+      
+      <view wx:if="{{!radarData}}" class="chart-placeholder">
+        <image src="/assets/icons/chart-placeholder.png" mode="aspectFit"></image>
+        <text class="text-body">暂无分析数据</text>
+        <view class="btn btn-ghost mt-1" bindtap="generateAnalysis">生成分析</view>
+      </view>
+    </view>
+    
+    <!-- 维度详情 -->
+    <view wx:if="{{radarData}}" class="dimensions-detail">
+      <block wx:for="{{radarData.dimensions}}" wx:key="name">
+        <view class="dimension-item card">
+          <view class="dimension-header">
+            <view class="dimension-name">
+              <view class="dimension-icon" style="background-color: {{item.color}}"></view>
+              <text class="text-subtitle">{{item.name}}</text>
+            </view>
+            <view class="dimension-score">
+              <text class="score-value">{{item.score}}</text>
+              <text class="score-max">/100</text>
+            </view>
+          </view>
+          
+          <view class="dimension-progress">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{item.score}}%; background-color: {{item.color}}"></view>
+            </view>
+          </view>
+          
+          <view wx:if="{{item.description}}" class="dimension-desc">
+            <text class="text-body">{{item.description}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- AI 解读 -->
+  <view wx:if="{{analysisResult}}" class="ai-interpretation card">
+    <view class="section-header">
+      <text class="text-subtitle">AI 智能解读</text>
+      <view class="ai-badge">
+        <image src="/assets/icons/ai.png" mode="aspectFit"></image>
+        <text>AI</text>
+      </view>
+    </view>
+    
+    <view class="interpretation-content">
+      <view class="overall-comment">
+        <text class="text-body">{{analysisResult.comment}}</text>
+      </view>
+      
+      <view wx:if="{{analysisResult.strengths && analysisResult.strengths.length > 0}}" class="strengths-section">
+        <text class="section-title">优势特长</text>
+        <view class="strengths-list">
+          <block wx:for="{{analysisResult.strengths}}" wx:key="*this">
+            <view class="strength-item">
+              <view class="strength-icon">
+                <image src="/assets/icons/star.png" mode="aspectFit"></image>
+              </view>
+              <text class="text-body">{{item}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+      
+      <view wx:if="{{analysisResult.suggestions && analysisResult.suggestions.length > 0}}" class="suggestions-section">
+        <text class="section-title">改进建议</text>
+        <view class="suggestions-list">
+          <block wx:for="{{analysisResult.suggestions}}" wx:key="*this">
+            <view class="suggestion-item">
+              <view class="suggestion-number">{{index + 1}}</view>
+              <text class="text-body">{{item}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史趋势 -->
+  <view class="trend-section">
+    <view class="section-header">
+      <text class="text-subtitle">历史趋势</text>
+      <view class="trend-type-selector">
+        <view class="trend-type {{selectedTrendType === 'overall' ? 'active' : ''}}" 
+              data-type="overall" bindtap="onTrendTypeChange">综合</view>
+        <view class="trend-type {{selectedTrendType === 'dimension' ? 'active' : ''}}" 
+              data-type="dimension" bindtap="onTrendTypeChange">分维度</view>
+      </view>
+    </view>
+    
+    <view class="trend-container card">
+      <canvas 
+        canvas-id="trendChart" 
+        class="trend-canvas"
+        disable-scroll="true">
+      </canvas>
+      
+      <view wx:if="{{!trendData}}" class="chart-placeholder">
+        <image src="/assets/icons/trend-placeholder.png" mode="aspectFit"></image>
+        <text class="text-body">暂无趋势数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 错题分析快捷入口 -->
+  <view class="quick-access">
+    <view class="access-item card" bindtap="navigateToWrongItems">
+      <view class="access-icon">
+        <image src="/assets/icons/wrong-large.png" mode="aspectFit"></image>
+      </view>
+      <view class="access-content">
+        <text class="text-subtitle">错题分析</text>
+        <text class="text-body">查看详细的错题统计和分析</text>
+        <view class="access-stats">
+          <text class="stat-number">{{wrongItemsCount}}</text>
+          <text class="stat-label">道错题待复习</text>
+        </view>
+      </view>
+      <view class="access-arrow">
+        <image src="/assets/icons/arrow-right.png" mode="aspectFit"></image>
+      </view>
+    </view>
+    
+    <view class="access-item card" bindtap="navigateToFeedback">
+      <view class="access-icon">
+        <image src="/assets/icons/feedback-large.png" mode="aspectFit"></image>
+      </view>
+      <view class="access-content">
+        <text class="text-subtitle">课堂反馈</text>
+        <text class="text-body">查看老师和同学的评价反馈</text>
+        <view class="access-stats">
+          <text class="stat-number">{{feedbackCount}}</text>
+          <text class="stat-label">条新反馈</text>
+        </view>
+      </view>
+      <view class="access-arrow">
+        <image src="/assets/icons/arrow-right.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 分析详情弹窗 -->
+<view class="analysis-modal {{showAnalysisModal ? 'show' : ''}}" bindtap="hideAnalysisModal">
+  <view class="modal-content glass-card" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="text-title">分析详情</text>
+      <view class="close-btn" bindtap="hideAnalysisModal">
+        <image src="/assets/icons/close.png" mode="aspectFit"></image>
+      </view>
+    </view>
+    
+    <scroll-view class="modal-body" scroll-y="true">
+      <view wx:if="{{selectedDimension}}" class="dimension-detail">
+        <view class="dimension-title">
+          <text class="text-subtitle">{{selectedDimension.name}}</text>
+          <text class="dimension-score-large">{{selectedDimension.score}}/100</text>
+        </view>
+        
+        <view class="dimension-analysis">
+          <text class="text-body">{{selectedDimension.analysis}}</text>
+        </view>
+        
+        <view wx:if="{{selectedDimension.recommendations}}" class="dimension-recommendations">
+          <text class="section-title">专项建议</text>
+          <block wx:for="{{selectedDimension.recommendations}}" wx:key="*this">
+            <view class="recommendation-item">
+              <text class="text-body">{{item}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>
