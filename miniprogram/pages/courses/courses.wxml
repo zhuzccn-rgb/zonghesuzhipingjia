@@ -1,0 +1,129 @@
+<!--pages/courses/courses.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-bar glass-card">
+      <view class="search-icon">
+        <image src="/assets/icons/search.png" mode="aspectFit"></image>
+      </view>
+      <input 
+        class="search-input" 
+        placeholder="搜索课程名称、老师..." 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+        confirm-type="search"
+      />
+      <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearch">
+        <image src="/assets/icons/close.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-section">
+    <scroll-view class="filter-scroll" scroll-x="true" show-scrollbar="{{false}}">
+      <view class="filter-item {{activeFilter === 'all' ? 'active' : ''}}" 
+            data-filter="all" bindtap="onFilterTap">
+        全部
+      </view>
+      <view class="filter-item {{activeFilter === 'enrolled' ? 'active' : ''}}" 
+            data-filter="enrolled" bindtap="onFilterTap">
+        已报名
+      </view>
+      <view class="filter-item {{activeFilter === 'ongoing' ? 'active' : ''}}" 
+            data-filter="ongoing" bindtap="onFilterTap">
+        进行中
+      </view>
+      <view class="filter-item {{activeFilter === 'completed' ? 'active' : ''}}" 
+            data-filter="completed" bindtap="onFilterTap">
+        已完成
+      </view>
+      <view class="filter-item {{activeFilter === 'favorite' ? 'active' : ''}}" 
+            data-filter="favorite" bindtap="onFilterTap">
+        我的收藏
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list">
+    <block wx:if="{{courses.length > 0}}">
+      <block wx:for="{{courses}}" wx:key="id">
+        <course-card 
+          course="{{item}}" 
+          bind:tap="onCourseCardTap"
+          bind:enroll="onEnrollCourse"
+          bind:favorite="onToggleFavorite">
+        </course-card>
+      </block>
+    </block>
+    
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <image class="empty-icon" src="/assets/icons/empty-course.png" mode="aspectFit"></image>
+      <text class="text-body">{{emptyMessage}}</text>
+      <view wx:if="{{activeFilter !== 'all'}}" class="btn btn-ghost mt-2" bindtap="resetFilter">
+        查看全部课程
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-section" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="text-caption">加载中...</text>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !loading}}">
+    <view class="btn btn-ghost" bindtap="loadMore">加载更多</view>
+  </view>
+</view>
+
+<!-- 筛选弹窗 -->
+<view class="filter-popup {{showFilterPopup ? 'show' : ''}}" bindtap="hideFilterPopup">
+  <view class="filter-content glass-card" catchtap="stopPropagation">
+    <view class="filter-header">
+      <text class="text-subtitle">筛选条件</text>
+      <view class="close-btn" bindtap="hideFilterPopup">
+        <image src="/assets/icons/close.png" mode="aspectFit"></image>
+      </view>
+    </view>
+    
+    <view class="filter-group">
+      <text class="filter-group-title">课程类型</text>
+      <view class="filter-options">
+        <block wx:for="{{courseTypes}}" wx:key="value">
+          <view class="filter-option {{item.selected ? 'selected' : ''}}" 
+                data-type="courseType" data-value="{{item.value}}" bindtap="onFilterOptionTap">
+            <text>{{item.label}}</text>
+            <view wx:if="{{item.selected}}" class="check-icon">
+              <image src="/assets/icons/check.png" mode="aspectFit"></image>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+    
+    <view class="filter-group">
+      <text class="filter-group-title">难度等级</text>
+      <view class="filter-options">
+        <block wx:for="{{difficultyLevels}}" wx:key="value">
+          <view class="filter-option {{item.selected ? 'selected' : ''}}" 
+                data-type="difficulty" data-value="{{item.value}}" bindtap="onFilterOptionTap">
+            <text>{{item.label}}</text>
+            <view wx:if="{{item.selected}}" class="check-icon">
+              <image src="/assets/icons/check.png" mode="aspectFit"></image>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+    
+    <view class="filter-actions">
+      <view class="btn btn-ghost" bindtap="resetFilters">重置</view>
+      <view class="btn btn-primary" bindtap="applyFilters">确定</view>
+    </view>
+  </view>
+</view>

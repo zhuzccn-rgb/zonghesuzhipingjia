@@ -1,0 +1,145 @@
+<!--components/course-card/course-card.wxml-->
+<view class="course-card card" bindtap="onCardTap">
+  <!-- 课程封面 -->
+  <view class="course-cover">
+    <image 
+      class="cover-image" 
+      src="{{course.coverImage || '/assets/default-course-cover.png'}}" 
+      mode="aspectFill"
+      lazy-load="true">
+    </image>
+    
+    <!-- 课程状态标签 -->
+    <view wx:if="{{course.status}}" class="status-badge status-{{course.status}}">
+      <text>{{statusText}}</text>
+    </view>
+    
+    <!-- 收藏按钮 -->
+    <view class="favorite-btn {{course.favorited ? 'favorited' : ''}}" 
+          catchtap="onFavoriteTap">
+      <image src="/assets/icons/{{course.favorited ? 'heart-filled' : 'heart'}}.png" mode="aspectFit"></image>
+    </view>
+    
+    <!-- 视频时长 -->
+    <view wx:if="{{course.duration}}" class="duration-badge">
+      <text>{{formatDuration(course.duration)}}</text>
+    </view>
+  </view>
+
+  <!-- 课程信息 -->
+  <view class="course-info">
+    <view class="course-header">
+      <text class="course-title">{{course.title}}</text>
+      <view wx:if="{{course.difficulty}}" class="difficulty-badge difficulty-{{course.difficulty}}">
+        <text>{{difficultyText}}</text>
+      </view>
+    </view>
+    
+    <view class="course-meta">
+      <view class="meta-item">
+        <image class="meta-icon" src="/assets/icons/teacher.png" mode="aspectFit"></image>
+        <text class="meta-text">{{course.teacher}}</text>
+      </view>
+      
+      <view wx:if="{{course.studentCount}}" class="meta-item">
+        <image class="meta-icon" src="/assets/icons/students.png" mode="aspectFit"></image>
+        <text class="meta-text">{{course.studentCount}}人学习</text>
+      </view>
+    </view>
+    
+    <view wx:if="{{course.description}}" class="course-description">
+      <text>{{course.description}}</text>
+    </view>
+    
+    <!-- 课程标签 -->
+    <view wx:if="{{course.tags && course.tags.length > 0}}" class="course-tags">
+      <block wx:for="{{course.tags}}" wx:key="*this">
+        <view class="tag">{{item}}</view>
+      </block>
+    </view>
+    
+    <!-- 进度条（已报名课程） -->
+    <view wx:if="{{course.enrolled && course.progress !== undefined}}" class="progress-section">
+      <view class="progress-header">
+        <text class="progress-text">学习进度</text>
+        <text class="progress-percent">{{course.progress}}%</text>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{course.progress}}%"></view>
+      </view>
+    </view>
+    
+    <!-- 课程时间信息 -->
+    <view class="course-schedule">
+      <view wx:if="{{course.startTime}}" class="schedule-item">
+        <image class="schedule-icon" src="/assets/icons/time.png" mode="aspectFit"></image>
+        <text class="schedule-text">{{formatTime(course.startTime)}}</text>
+      </view>
+      
+      <view wx:if="{{course.endTime}}" class="schedule-item">
+        <image class="schedule-icon" src="/assets/icons/calendar.png" mode="aspectFit"></image>
+        <text class="schedule-text">至 {{formatTime(course.endTime)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="course-actions">
+    <!-- 未报名状态 -->
+    <block wx:if="{{!course.enrolled}}">
+      <view class="price-section" wx:if="{{course.price !== undefined}}">
+        <text class="price {{course.price === 0 ? 'free' : ''}}">
+          {{course.price === 0 ? '免费' : '¥' + course.price}}
+        </text>
+        <text wx:if="{{course.originalPrice && course.originalPrice > course.price}}" 
+              class="original-price">¥{{course.originalPrice}}</text>
+      </view>
+      
+      <view class="btn btn-primary enroll-btn" catchtap="onEnrollTap">
+        <text>{{course.enrolling ? '报名中...' : '立即报名'}}</text>
+      </view>
+    </block>
+    
+    <!-- 已报名状态 -->
+    <block wx:else>
+      <view class="enrolled-actions">
+        <view wx:if="{{course.canJoin}}" class="btn btn-primary" catchtap="onJoinTap">
+          <text>进入学习</text>
+        </view>
+        
+        <view wx:elif="{{course.hasPlayback}}" class="btn btn-secondary" catchtap="onPlaybackTap">
+          <text>观看回放</text>
+        </view>
+        
+        <view wx:else class="btn btn-ghost">
+          <text>{{getStatusButtonText(course.status)}}</text>
+        </view>
+        
+        <!-- 更多操作 -->
+        <view class="more-actions" catchtap="onMoreActionsTap">
+          <image src="/assets/icons/more.png" mode="aspectFit"></image>
+        </view>
+      </div>
+    </block>
+  </view>
+</view>
+
+<!-- 更多操作菜单 -->
+<view class="action-menu {{showActionMenu ? 'show' : ''}}" catchtap="hideActionMenu">
+  <view class="menu-content" catchtap="stopPropagation">
+    <view class="menu-item" bindtap="onShareCourse">
+      <image src="/assets/icons/share.png" mode="aspectFit"></image>
+      <text>分享课程</text>
+    </view>
+    
+    <view class="menu-item" bindtap="onReportCourse">
+      <image src="/assets/icons/report.png" mode="aspectFit"></image>
+      <text>举报</text>
+    </view>
+    
+    <view wx:if="{{course.enrolled}}" class="menu-item" bindtap="onUnenrollCourse">
+      <image src="/assets/icons/unenroll.png" mode="aspectFit"></image>
+      <text>取消报名</text>
+    </view>
+  </view>
+</view>
