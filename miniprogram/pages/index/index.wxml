@@ -1,0 +1,123 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 欢迎卡片 -->
+  <view class="welcome-card glass-card">
+    <view class="welcome-header">
+      <view class="user-avatar">
+        <image src="{{userInfo.avatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      </view>
+      <view class="user-info">
+        <text class="text-title">{{greeting}}，{{userInfo.nickname || '同学'}}</text>
+        <text class="text-body">今天也要加油学习哦！</text>
+      </view>
+    </view>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-number">{{stats.totalCourses}}</text>
+        <text class="stat-label">已报名课程</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{stats.completedCourses}}</text>
+        <text class="stat-label">已完成课程</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{stats.studyHours}}</text>
+        <text class="stat-label">学习时长(小时)</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quick-actions">
+    <view class="section-title">
+      <text class="text-subtitle">快捷操作</text>
+    </view>
+    <view class="action-grid">
+      <view class="action-item glass-card" bindtap="navigateToCourses">
+        <view class="action-icon">
+          <image src="/assets/icons/course-large.png" mode="aspectFit"></image>
+        </view>
+        <text class="action-text">浏览课程</text>
+      </view>
+      <view class="action-item glass-card" bindtap="navigateToAnalysis">
+        <view class="action-icon">
+          <image src="/assets/icons/analysis-large.png" mode="aspectFit"></image>
+        </view>
+        <text class="action-text">AI分析</text>
+      </view>
+      <view class="action-item glass-card" bindtap="navigateToWrongItems">
+        <view class="action-icon">
+          <image src="/assets/icons/wrong-large.png" mode="aspectFit"></image>
+        </view>
+        <text class="action-text">错题本</text>
+      </view>
+      <view class="action-item glass-card" bindtap="showComingSoon">
+        <view class="action-icon">
+          <image src="/assets/icons/feedback-large.png" mode="aspectFit"></image>
+        </view>
+        <text class="action-text">课堂反馈</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近期课程 -->
+  <view class="recent-courses">
+    <view class="section-header flex-between">
+      <text class="text-subtitle">近期课程</text>
+      <text class="text-caption" bindtap="navigateToCourses">查看全部</text>
+    </view>
+    
+    <block wx:if="{{recentCourses.length > 0}}">
+      <view class="course-list">
+        <block wx:for="{{recentCourses}}" wx:key="id">
+          <course-card 
+            course="{{item}}" 
+            bind:tap="onCourseCardTap"
+            bind:enroll="onEnrollCourse">
+          </course-card>
+        </block>
+      </view>
+    </block>
+    
+    <view wx:else class="empty-state">
+      <image class="empty-icon" src="/assets/icons/empty-course.png" mode="aspectFit"></image>
+      <text class="text-body">暂无课程信息</text>
+      <view class="btn btn-primary mt-2" bindtap="navigateToCourses">
+        去看看有什么课程
+      </view>
+    </view>
+  </view>
+
+  <!-- 学习提醒 -->
+  <view class="reminder-card card" wx:if="{{upcomingCourse}}">
+    <view class="reminder-header">
+      <view class="reminder-icon">
+        <image src="/assets/icons/bell.png" mode="aspectFit"></image>
+      </view>
+      <view class="reminder-content">
+        <text class="text-subtitle">即将开始</text>
+        <text class="text-body">{{upcomingCourse.title}}</text>
+        <text class="text-caption">{{upcomingCourse.startTime}}</text>
+      </view>
+    </view>
+    <view class="reminder-actions">
+      <view class="btn btn-ghost" bindtap="dismissReminder">稍后提醒</view>
+      <view class="btn btn-primary" bindtap="joinCourse" data-course="{{upcomingCourse}}">立即进入</view>
+    </view>
+  </view>
+
+  <!-- 上拉加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="text-caption">加载中...</text>
+  </view>
+</view>
+
+<!-- 消息订阅弹窗 -->
+<modal 
+  show="{{showSubscribeModal}}" 
+  title="开启消息提醒" 
+  content="开启后可以及时收到课程开始、作业提醒等重要消息"
+  bind:confirm="onSubscribeConfirm"
+  bind:cancel="onSubscribeCancel">
+</modal>
