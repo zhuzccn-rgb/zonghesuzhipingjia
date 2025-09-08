@@ -11,6 +11,7 @@ class SortingAlgorithm:
          "单词":3,
          "状语从句":4
         }
+        self.studentlist = []
         self.category_list = []
 
 
