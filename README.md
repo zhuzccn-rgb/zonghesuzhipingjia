@@ -7,9 +7,9 @@
 
 > 基于AI技术的学生综合素质评价平台，支持课程管理、智能分析、错题统计等功能。
 
-## 🌟 功能特色
+##  功能特色
 
-### 📚 核心功能
+###  核心功能
 - **线上课程报名**: 课程浏览、在线报名、学习进度跟踪
 - **智能上课提醒**: 基于微信订阅消息的课前提醒
 - **课程回放**: 支持断点续播的视频回放系统
@@ -17,20 +17,20 @@
 - **错题分析**: 错题收集、分类统计、复习提醒
 - **课堂反馈**: 多维度反馈收集和展示
 
-### 🎨 设计亮点
+###  设计亮点
 - **苹果风格UI**: 圆角矩形设计语言
 - **液态玻璃效果**: 半透明模糊背景，层次丰富
 - **响应式布局**: 适配各种屏幕尺寸
 - **暗色模式**: 完整的深色主题支持
 - **无障碍优化**: 支持辅助功能和大字体
 
-### 🤖 AI分析系统
+###  AI分析系统
 - **规则计算基线**: 基于学习指标的科学评分算法
 - **LLM智能解读**: GPT-4生成个性化学习建议
 - **五维度评估**: 专注度、参与度、知识掌握、提问表现、作业完成度
 - **趋势分析**: 历史数据对比和改进建议
 
-## 🏗️ 技术架构
+## 🏗 技术架构
 
 ### 前端技术栈
 - **框架**: 微信小程序原生开发
@@ -138,7 +138,7 @@ comprehensive-evaluation-assistant/
 └── README.md
 ```
 
-## 🎯 AI分析模块详解
+##  AI分析模块详解
 
 ### 工作流程
 1. **数据收集**: 收集学习指标（作业准确率、考试分数、互动次数等）
@@ -213,7 +213,7 @@ const knowledgeScore = Math.min(100, Math.max(0,
 - 内存使用: < 100MB
 - 帧率保持: 60fps
 
-## 🔒 安全特性
+##  安全特性
 
 ### 数据安全
 - **JWT认证**: 无状态身份验证
@@ -226,7 +226,7 @@ const knowledgeScore = Math.min(100, Math.max(0,
 - **用户授权**: 明确的权限请求流程
 - **日志脱敏**: 生产环境日志不包含敏感信息
 
-## 🧪 测试
+##  测试
 
 ### 运行测试
 ```bash
@@ -243,7 +243,7 @@ npm test
 - 集成测试: 数据库操作、AI服务调用
 - 端到端测试: 关键用户流程
 
-## 📋 部署指南
+##  部署指南
 
 ### 生产环境部署
 1. **后端部署**
@@ -298,9 +298,8 @@ npm test
 
 ## 📞 联系方式
 
-- 项目主页: [GitHub Repository](https://github.com/your-username/comprehensive-evaluation-assistant)
-- 问题反馈: [Issues](https://github.com/your-username/comprehensive-evaluation-assistant/issues)
-- 邮箱: your-email@example.com
+- 项目主页: [GitHub Repository](https://github.com/zhuzccn-rgb/comprehensive-evaluation-assistant)
+- 问题反馈: [Issues](https://github.com/zhuzccn/comprehensive-evaluation-assistant/issues)
 
 ---
 
