@@ -5,7 +5,6 @@ This repository uses Git submodules.
 
 After cloning, run:
 
-```bash
 git submodule update --init --recursive
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
