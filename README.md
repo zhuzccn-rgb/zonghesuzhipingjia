@@ -1,5 +1,5 @@
 # 综合素质评价助手 - 微信小程序
-！## Submodules
+## Submodules
 
 This repository uses Git submodules.
 
