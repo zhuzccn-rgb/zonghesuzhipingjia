@@ -1,4 +1,12 @@
 # 综合素质评价助手 - 微信小程序
+！## Submodules
+
+This repository uses Git submodules.
+
+After cloning, run:
+
+```bash
+git submodule update --init --recursive
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![WeChat](https://img.shields.io/badge/WeChat-MiniProgram-green.svg)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
